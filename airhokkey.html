@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>AIR-HOCKEY</title>
+    <link rel="shortcut icon"
+          href="https://lh3.googleusercontent.com/ogw/ADGmqu_sTgrOdD83eGalXC87hA_tP9CbRON-Q2vnjYp6=s64-c-mo"
+          type="image/png">
+</head>
+<body style="margin: 0">
+<canvas id="canvas">Upload Browser!</canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+    let v;
+    let i = 0;
+    let d = 0;
+    let isgp = 0;
+    let bool = 0;
+    let mode = 0;
+    let dir;
+    let dir2 = 0;
+    let rpx = 100;
+    let l = 10;
+    let r = 15;
+    let s = 1;
+    let r2 = 20;
+    let s2 = 1;
+    let score = 0;
+    let scoreBot = 0;
+    let neironball;
+    let neironballI;
+    let touchPosition = null;
+    let posY = canvas.height / 2.3;
+    let posYBot = canvas.height / 2.3;
+    console.log(posY);
+    let posYBotC = posYBot;
+    console.log(posYBotC);
+    let posYBotCI;
+    let posYI;
+    let end;
+    let game;
+    let rect1 = new Path2D();
+    let rect2 = new Path2D();
+    let rect3 = new Path2D();
+    let arc = [];
+    arc[0] = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+    };
+    let rectN = [];
+    let rectN1 = [];
+    let grad = ctx.createLinearGradient(0, 0, innerWidth, innerHeight / 2);
+    grad.addColorStop('0', '#b2ffe7');
+    grad.addColorStop('1', '#00cbba')
+    start_end();
+
+    function start_end() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        console.log("bool: " + bool);
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        if (bool == 0) {
+            console.log("bool: " + bool);
+            console.log("bool: " + bool);
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            console.log("bool: " + bool);
+            ctx.fillStyle = '#fff17d';
+            ctx.textAlign = 'center';
+            ctx.font = '640% Trebuchet MS';
+            ctx.fillText('< AIR HOCKEY >', canvas.width / 2, canvas.height / 7, canvas.width / 1.3);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '500% Trebuchet MS';
+            ctx.textAlign = 'center';
+            ctx.fillText('MENU', canvas.width / 2, canvas.height / 3, canvas.width / 5);
+            ctx.fillStyle = '#00b7d7';
+            rect1.rect(canvas.width / 3.3, canvas.height / 2.5, canvas.width / 2.5, canvas.height / 10);
+            ctx.fill(rect1);
+            ctx.fillStyle = '#00b7d7';
+            rect2.rect(canvas.width / 3.3, (canvas.height / 2.5) + (canvas.height / 7), canvas.width / 2.5, canvas.height / 10);
+            ctx.fill(rect2);
+            ctx.fillStyle = '#00b7d7';
+            rect3.rect(canvas.width / 3.3, (canvas.height / 2.5) + ((canvas.height / 7) * 2), canvas.width / 2.5, canvas.height / 10);
+            ctx.fill(rect3);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '250% Trebuchet MS';
+            ctx.textAlign = 'center';
+            ctx.fillText('PLAYER/PLAYER', canvas.width / 2, canvas.height / 2.15, canvas.width / 3);
+            ctx.fillText('BOT/PLAYER', canvas.width / 2, canvas.height / 2.15 + (canvas.height / 7), canvas.width / 3);
+            ctx.fillText('BOT/BOT', canvas.width / 2, canvas.height / 2.15 + ((canvas.height / 7) * 2), canvas.width / 3);
+            canvas.addEventListener('mousedown', direction2);
+            console.log("bool: " + bool);
+
+            function direction2(event) {
+                console.log("bool: " + bool);
+                if (bool == 0) {
+                    console.log("bool: " + bool);
+                    if (ctx.isPointInPath(rect1, event.offsetX, event.offsetY)) {
+                        mode = 1;
+                        ctx.clearRect(0, 0, innerWidth, innerHeight);
+                        bool = 1;
+                        console.log("bool: " + bool);
+                        return draw();
+                    }
+                    if (ctx.isPointInPath(rect2, event.offsetX, event.offsetY)) {
+                        mode = 2;
+                        ctx.clearRect(0, 0, innerWidth, innerHeight);
+                        bool = 1;
+                        console.log("bool: " + bool);
+                        return draw();
+                    }
+                    if (ctx.isPointInPath(rect3, event.offsetX, event.offsetY)) {
+                        mode = 3;
+                        ctx.clearRect(0, 0, innerWidth, innerHeight);
+                        bool = 1;
+                        console.log("bool: " + bool);
+                        return draw();
+                    }
+                }
+            }
+
+            console.log("bool: " + bool);
+            console.log("bool: " + bool);
+            requestAnimationFrame(start_end);
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        rpx = prompt("Укажите скорость мяча! Лучше всего указывать значение в диапазоне от 20 до 100.", 50);
+        if (mode == 2) {
+            r = prompt("Укажите количество нейронов бота! Чем больше нейронов тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 10 до 20.", 15);
+            r /= 10;
+            s = prompt("Укажите скорость бота! Чем больше скорость тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 3 до 30.", 10);
+            s /= 10;
+        }
+        if (mode == 3) {
+            r = prompt("Укажите количество нейронов левого бота! Чем больше нейронов тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 10 до 20.", 10);
+            r /= 10;
+            s = prompt("Укажите скорость левого бота! Чем больше скорость тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 3 до 30.", 20);
+            s /= 10;
+            r2 = prompt("Укажите количество нейронов правого бота! Чем больше нейронов тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 10 до 20.", 20);
+            r2 /= 10;
+            s2 = prompt("Укажите скорость правого бота! Чем больше скорость тем лучше будет играть бот. Лучше всего указывать значение в диапазоне от 3 до 30.", 10);
+            s2 /= 10;
+        }
+        game = setInterval(drawBackGround, 10);
+    }
+
+    function finish() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        mode = 4;
+        end = setInterval(drawFinish, 1000);
+    }
+
+    function drawFinish() {
+        i++;
+        if (i >= 5) {
+            location.reload();
+        }
+        console.log(i);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '320% Trebuchet MS';
+        ctx.textAlign = 'center';
+        ctx.fillText('RIGHT PLAYER WIN!!!', canvas.width / 2, canvas.height / 1.9);
+    }
+
+    function ffinish() {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        mode = 4;
+        end = setInterval(drawFfinish, 1000);
+    }
+
+    function drawFfinish() {
+        i++;
+        if (i >= 5) {
+            location.reload();
+        }
+        console.log(i);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '320% Trebuchet MS';
+        ctx.textAlign = 'center';
+        ctx.fillText('LEFT PLAYER WIN!!!', canvas.width / 2, canvas.height / 1.9);
+    }
+
+    function drawBackGround() {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        ctx.fillRect(0, 0, canvas.width / 2, canvas.height);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (mode == 2 || mode == 3) {
+            for (let i = 0; i < (l * r); i++) {
+                rectN[i] = {
+                    r: ctx.fillRect(0, (canvas.height / (l * r)) * i, canvas.width, (canvas.height / (l * r)) * (i + 1)),
+                    k: 1
+                }
+            }
+            if (mode == 3) {
+                for (let i = 0; i < (l * r2); i++) {
+                    rectN1[i] = {
+                        r: ctx.fillRect(0, (canvas.height / (l * r2)) * i, canvas.width, (canvas.height / (l * r2)) * (i + 1)),
+                        k: 1
+                    }
+                }
+            }
+        }
+        if (mode == 1) {
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width / 20, posYBotC, canvas.width / 50, canvas.height / l);
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width - canvas.width / 20, posY, canvas.width / 50, canvas.height / l);
+        }
+        if (mode == 2) {
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width / 20, posYBotC - (canvas.height / (l * 2)), canvas.width / 50, canvas.height / l);
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width - canvas.width / 20, posY, canvas.width / 50, canvas.height / l);
+        }
+        if (mode == 3) {
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width / 20, posYBotC - (canvas.height / (l * 2)), canvas.width / 50, canvas.height / l);
+            ctx.fillStyle = '#00b7d7';
+            ctx.fillRect(canvas.width - canvas.width / 20, posY - (canvas.height / (l * 2)), canvas.width / 50, canvas.height / l);
+        }
+        for (let i = 0; i < arc.length; i++) {
+            ctx.fillRect(arc[i].x, arc[i].y, canvas.width / 50, canvas.width / 50);
+            ctx.fill();
+        }
+
+        if (score >= 7) {
+            clearInterval(game);
+            mode = 4;
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            return finish();
+        }
+        if (scoreBot >= 7) {
+            clearInterval(game);
+            mode = 4;
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            return ffinish();
+        }
+        let ballX = arc[0].x;
+        let ballY = arc[0].y;
+        if (ballX > canvas.width) {
+            console.log("posY  - (canvas.height / (l * 2)): " + (posY - (canvas.height / (l * 2))));
+            console.log("posY: " + posY);
+            console.log("ballY: " + ballY);
+            console.log(dir2);
+            dir2 = 0;
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            scoreBot++;
+        }
+        if (ballX < 0) {
+            console.log("posY  - (canvas.height / (l * 2)): " + (posY - (canvas.height / (l * 2))));
+            console.log("posY: " + posY);
+            console.log("ballY: " + ballY);
+            console.log(dir2);
+            dir2 = 0;
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            score++;
+        }
+        if (mode == 2 || mode == 3) {
+            for (let i = 0; i < (l * r); i++) {
+
+                if (ballY >= (canvas.height / (l * r)) * i && ballY <= (canvas.height / (l * r)) * (i + 1)) {
+                    rectN[i].k = 0;
+                    neironball = rectN[i].k;
+                    neironballI = i;
+                }
+                if (posYBotC >= (canvas.height / (l * r)) * i && posYBotC < (canvas.height / (l * r)) * (i + 1)) {
+                    posYBotCI = i;
+                }
+            }
+            if (posYBotCI == neironballI) {
+            } else if (posYBotCI > neironballI) {
+                posYBotC -= canvas.height / (rpx / s);
+            } else if (posYBotCI < neironballI) {
+                posYBotC += canvas.width / (rpx / s);
+                ;
+            }
+            if (mode == 3) {
+                for (let i = 0; i < (l * r2); i++) {
+
+                    if (ballY >= (canvas.height / (l * r2)) * i && ballY <= (canvas.height / (l * r2)) * (i + 1)) {
+                        rectN1[i].k = 0;
+                        neironball = rectN1[i].k;
+                        neironballI = i;
+                    }
+                    if (posY >= (canvas.height / (l * r2)) * i && posY < (canvas.height / (l * r2)) * (i + 1)) {
+                        posYI = i;
+                    }
+                }
+                console.log(neironballI + ' neironballI');
+                console.log(posYI + ' posYI');
+                if (posYI == neironballI) {
+                    console.log(posYBotCI + ' posYBotCI');
+                    console.log(neironballI + ' neironballI');
+                } else if (posYI > neironballI) {
+                    posY -= canvas.height / (rpx / s2);
+                    console.log(posY + ' posY');
+                    console.log(posYI + ' posYI');
+                    console.log(neironballI + ' neironballI');
+                } else if (posYI < neironballI) {
+                    posY += canvas.width / (rpx / s2);
+                    console.log(posY + ' posYBotC');
+                    console.log(posYI + '130');
+                    console.log(neironballI + ' neironballI');
+                }
+            }
+        }
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '320% Trebuchet MS';
+        ctx.textAlign = 'center';
+        ctx.fillText(scoreBot + ' : ' + score, canvas.width / 1.95, canvas.height / 13);
+        if (ballY <= 0 && dir2 == 5) {
+            dir2 = 6;
+            if (isgp == 1) {
+            }
+        }
+        if (ballY <= 0 && dir2 == 1) {
+            dir2 = 2;
+        }
+        if (ballY >= canvas.height && dir2 == 6) {
+            dir2 = 5;
+        }
+        if (ballY >= canvas.height && dir2 == 2) {
+            dir2 = 1;
+        }
+        if (mode == 1) {
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY && ballY <= posY + canvas.height / (l * 3)) {
+                dir2 = 5;
+            }
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY + canvas.height / (l * 3) && ballY <= posY + (canvas.height / (l * 3)) * 2) {
+                dir2 = 4;
+            }
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY + (canvas.height / (l * 3)) * 2 && ballY <= posY + (canvas.height / (l * 3)) * 3) {
+                dir2 = 6;
+                console.log(dir2);
+            }
+            if (ballX <= canvas.width / 20 + canvas.width / 50 && ballX >= 0 && ballY + canvas.width / 50 >= posYBotC && ballY <= posYBotC + (canvas.height / (l * 3))) {
+                dir2 = 1;
+            }
+            if (ballX <= canvas.width / 20 + canvas.width / 50 && ballX >= 0 && ballY + canvas.width / 50 >= posYBotC + (canvas.height / (l * 3)) && ballY <= posYBotC + (canvas.height / (l * 3)) * 2) {
+                dir2 = 3;
+            }
+            if (ballX <= canvas.width / 20 + canvas.width / 50 && ballX >= 0 && ballY + canvas.width / 50 >= posYBotC + (canvas.height / (l * 3) * 2) && ballY <= posYBotC + (canvas.height / (l * 3)) * 3) {
+                dir2 = 2;
+            }
+        }
+        if (mode == 2) {
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY && ballY <= posY + canvas.height / (l * 3)) {
+                dir2 = 5;
+                console.log("posY  - (canvas.height / (l * 2)): " + (posY - (canvas.height / (l * 2))));
+                console.log("posY: " + posY);
+                console.log("ballY: " + ballY);
+                console.log(dir2);
+            }
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY + canvas.height / (l * 3) && ballY <= posY + (canvas.height / (l * 3)) * 2) {
+                dir2 = 4;
+                console.log("posY  - (canvas.height / (l * 2)): " + (posY - (canvas.height / (l * 2))));
+                console.log("posY: " + posY);
+                console.log("ballY: " + ballY);
+                console.log(dir2);
+            }
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50 && ballX <= canvas.width && ballY + canvas.width / 50 >= posY + (canvas.height / (l * 3)) * 2 && ballY <= posY + (canvas.height / (l * 3)) * 3) {
+                dir2 = 6;
+                console.log("posY  - (canvas.height / (l * 2)): " + (posY - (canvas.height / (l * 2))));
+                console.log("posY: " + posY);
+                console.log("posY + (canvas.height / (l * 3)) * 3: " + (posY + (canvas.height / (l * 3)) * 3));
+                console.log("ballY: " + ballY);
+                console.log(dir2);
+            }
+            if (ballX <= canvas.width / 20 + canvas.width / 50) {
+                if (ballX >= 0) {
+                    if (ballY + canvas.width / 50 >= posYBotC - (canvas.height / (l * 2))) {
+                        if (ballY <= posYBotC + (canvas.height / l)) {
+                            dir2 = Math.floor(Math.random() * 3 + 1);
+                        }
+                    }
+                }
+            }
+        }
+        if (mode == 3) {
+            if (ballX >= canvas.width - canvas.width / 20 - canvas.width / 50) {
+                if (ballX <= canvas.width) {
+                    if (ballY + canvas.width / 50 >= posY - (canvas.height / (l * 2))) {
+                        if (ballY <= posY + canvas.height / l) {
+                            dir2 = Math.floor(Math.random() * 3 + 4);
+                        }
+                    }
+                }
+            }
+            if (ballX <= canvas.width / 20 + canvas.width / 50) {
+                if (ballX >= 0) {
+                    if (ballY + canvas.width / 50 >= posYBotC - (canvas.height / (l * 2))) {
+                        if (ballY <= posYBotC + (canvas.height / l)) {
+                            dir2 = Math.floor(Math.random() * 3 + 1);
+                        }
+                    }
+                }
+            }
+        }
+        arc.pop();
+        if (dir2 == 5) {
+            ballX -= canvas.width * (rpx / 10000);
+            ballY -= canvas.height * (rpx / 10000);
+        }
+        if (dir2 == 6) {
+            console.log(dir2);
+            ballX -= canvas.width * (rpx / 10000);
+            ballY += canvas.height * (rpx / 10000);
+        }
+        if (dir2 == 4) {
+            ballX -= canvas.width * (rpx / 10000);
+        }
+        if (dir2 == 1) {
+            ballX += canvas.width * (rpx / 10000);
+            ballY -= canvas.height * (rpx / 10000);
+        }
+        if (dir2 == 2) {
+            ballX += canvas.width * (rpx / 10000);
+            ballY += canvas.height * (rpx / 10000);
+        }
+        if (dir2 == 3) {
+            ballX += canvas.width * (rpx / 10000);
+        }
+        let newball = {
+            x: ballX,
+            y: ballY,
+        }
+        arc.unshift(newball);
+        let gp = navigator.getGamepads()[0];
+        if (isgp == 1) {
+            for (let i = 0; i <= 17; i++) {
+                if (gp.buttons[0].pressed == true) {
+                    console.log("checked!!! " + i);
+                }
+            }
+            if (gp.buttons[0].value > 0 || gp.buttons[0].pressed == true || gp.buttons[0].value > 0 || gp.buttons[0].pressed == true) {
+                if (dir2 == 0) {
+                    console.log("posY: " + posY);
+                    console.log("posYBotC: " + posYBotC);
+                    dir2 = 3;
+                }
+            }
+            if (gp.axes[3] > 0.2 && gp.axes[3] < 0.4) {
+                if (posY + canvas.height / l >= canvas.height) {
+                    posY = posY;
+                } else {
+                    console.log("          1");
+                    posY += canvas.height / (rpx * 6);
+                }
+            }
+            if (gp.axes[3] < -0.2 && gp.axes[3] > -0.4) {
+                if (posY <= 0) {
+                    posY = posY;
+                } else {
+                    console.log("  1");
+                    posY -= canvas.height / (rpx * 6);
+                }
+            }
+            if (gp.axes[3] > 0.4 && gp.axes[3] < 0.6) {
+                if (posY + canvas.height / l >= canvas.height) {
+                    posY = posY;
+                } else {
+                    console.log("          2");
+                    posY += canvas.height / (rpx * 3);
+                }
+            }
+            if (gp.axes[3] < -0.4 && gp.axes[3] > -0.6) {
+                if (posY <= 0) {
+                    posY = posY;
+                } else {
+                    console.log("  1");
+                    posY -= canvas.height / (rpx * 3);
+                }
+            }
+            if (gp.axes[3] > 0.6 && gp.axes[3] < 0.95) {
+                if (posY + canvas.height / l >= canvas.height) {
+                    posY = posY;
+                } else {
+                    console.log("          3");
+                    posY += canvas.height / (rpx * 1.5);
+                }
+            }
+            if (gp.axes[3] < -0.6 && gp.axes[3] > -0.95) {
+                if (posY <= 0) {
+                    posY = posY;
+                } else {
+                    console.log("  1");
+                    posY -= canvas.height / (rpx * 1.5);
+                }
+            }
+            if (gp.axes[3] > 0.95 && gp.axes[3] <= 1) {
+                if (posY + canvas.height / l >= canvas.height) {
+                    posY = posY;
+                } else {
+                    console.log("          4");
+                    posY += canvas.height / (rpx * 0.5);
+                }
+            }
+            if (gp.axes[3] < -0.95 && gp.axes[3] >= -1) {
+                if (posY <= 0) {
+                    posY = posY;
+                } else {
+                    console.log("  1");
+                    posY -= canvas.height / (rpx * 0.5);
+                }
+            }
+            if (gp.axes[3] <= 0.2 && gp.axes[1] >= -0.2) {
+                posY = posY;
+            }
+            if (mode == 1) {
+                if (gp.axes[1] > 0.2 && gp.axes[1] < 0.4) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 6);
+                    }
+                }
+                if (gp.axes[1] < -0.2 && gp.axes[1] > -0.4) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 6);
+                    }
+                }
+                if (gp.axes[1] > 0.4 && gp.axes[1] < 0.6) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 3);
+                    }
+                }
+                if (gp.axes[1] < -0.4 && gp.axes[1] > -0.6) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 3);
+                    }
+                }
+                if (gp.axes[1] > 0.6 && gp.axes[1] < 0.95) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 1.5);
+                    }
+                }
+                if (gp.axes[1] < -0.6 && gp.axes[1] > -0.95) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 1.5);
+                    }
+                }
+                if (gp.axes[1] > 0.95 && gp.axes[1] <= 1) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 0.5);
+                    }
+                }
+                if (gp.axes[1] < -0.95 && gp.axes[1] >= -1) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 0.5);
+                    }
+                }
+                if (gp.axes[1] <= 0.2 && gp.axes[1] >= -0.2) {
+                    posYBotC = posYBotC;
+                }
+            }
+        }
+        document.addEventListener('keydown', ballMovement);
+        document.addEventListener('mousedown', ballMovement2);
+        if (mode == 2 || mode == 1) {
+            canvas.addEventListener('mousemove', stickMovement);
+        } //console.log("трандец!!!!!!!!!!... А потом ты понимаешь что здесь ошибка и говоришь ура!!!!!!!!!!");
+        canvas.addEventListener('touchmove', touchStickMovement);
+        if (mode == 2 || mode == 1) {
+            window.addEventListener("gamepadconnected", function (e) {
+                console.log(
+                    e.gamepad.buttons.indexOf, e.gamepad.axes.values);
+                isgp = 1;
+            });
+            window.addEventListener("gamepaddisconnected", function (e) {
+                console.log("Gamepad disconnected from index %d: %s",
+                    e.gamepad.index, e.gamepad.id);
+            });
+        }
+
+        function ballMovement(event) {
+            if (event.keyCode == 13) {
+                dir2 = 3;
+            }
+        }
+
+        function ballMovement2(event) {
+            if (dir2 == 0) {
+                dir2 = 3;
+                console.log(dir2);
+            }
+        }
+
+        function stickMovement(event) { //console.log("трандец!!!!!!!!!!... А потом ты понимаешь что здесь ошибка и говоришь ура!!!!!!!!!!");
+            if (mode == 1) {
+                if (canvas.width / 2 < event.clientX) {
+                    ctx.fillStyle = '#00b7d7';
+                    ctx.fillRect(canvas.width - canvas.width / 20, event.clientY, canvas.width / 50, canvas.height / l);
+                    posY = event.clientY;
+                }
+                if (canvas.width / 2 > event.clientX) {
+                    ctx.fillStyle = '#00b7d7';
+                    ctx.fillRect(canvas.width / 20, event.clientY, canvas.width / 50, canvas.height / l);
+                    posYBotC = event.clientY;
+                }
+            }
+            if (mode == 2) {
+                ctx.fillStyle = '#00b7d7';
+                ctx.fillRect(canvas.width - canvas.width / 20, event.clientY, canvas.width / 50, canvas.height / l);
+                posY = event.clientY;
+            }
+        }
+
+        function touchStickMovement(event) {
+            if (mode == 1) {
+                if (canvas.width / 2 < event.changedTouches[0].clientX) {
+                    ctx.fillStyle = '#00b7d7';
+                    ctx.fillRect(canvas.width - canvas.width / 20, event.changedTouches[0].clientY, canvas.width / 50, canvas.height / l);
+                    posY = event.changedTouches[0].clientY;
+                }
+                if (canvas.width / 2 > event.changedTouches[0].clientX) {
+                    ctx.fillStyle = '#00b7d7';
+                    ctx.fillRect(canvas.width / 20, event.changedTouches[0].clientY, canvas.width / 50, canvas.height / l);
+                    posYBotC = event.changedTouches[0].clientY;
+                }
+            }
+            if (mode == 2) {
+                ctx.fillStyle = '#00b7d7';
+                ctx.fillRect(canvas.width - canvas.width / 20, event.changedTouches[0].clientY, canvas.width / 50, canvas.height / l);
+                posY = event.changedTouches[0].clientY;
+            }
+        }
+    }
+</script>
+</body>
+</html>
