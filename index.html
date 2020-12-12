@@ -460,7 +460,7 @@
                     posY = posY;
                 } else {
                     console.log("          1");
-                    posY += canvas.height / (rpx * 7);
+                    posY += canvas.height / (rpx * 8);
                 }
             }
             if (gp.axes[3] < -0.2 && gp.axes[3] > -0.4) {
@@ -468,7 +468,7 @@
                     posY = posY;
                 } else {
                     console.log("  1");
-                    posY -= canvas.height / (rpx * 7);
+                    posY -= canvas.height / (rpx * 8);
                 }
             }
             if (gp.axes[3] > 0.4 && gp.axes[3] < 0.6) {
@@ -476,7 +476,7 @@
                     posY = posY;
                 } else {
                     console.log("          2");
-                    posY += canvas.height / (rpx * 4);
+                    posY += canvas.height / (rpx * 6);
                 }
             }
             if (gp.axes[3] < -0.4 && gp.axes[3] > -0.6) {
@@ -484,25 +484,41 @@
                     posY = posY;
                 } else {
                     console.log("  1");
-                    posY -= canvas.height / (rpx * 4);
+                    posY -= canvas.height / (rpx * 6);
                 }
             }
-            if (gp.axes[3] > 0.6 && gp.axes[3] < 0.95) {
+            if (gp.axes[3] > 0.6 && gp.axes[3] < 0.75) {
                 if (posY + canvas.height / l >= canvas.height) {
                     posY = posY;
                 } else {
                     console.log("          3");
-                    posY += canvas.height / (rpx * 2.5);
+                    posY += canvas.height / (rpx * 4);
                 }
             }
-            if (gp.axes[3] < -0.6 && gp.axes[3] > -0.95) {
+            if (gp.axes[3] < -0.6 && gp.axes[3] > -0.75) {
                 if (posY <= 0) {
                     posY = posY;
                 } else {
                     console.log("  1");
-                    posY -= canvas.height / (rpx * 2.5);
+                    posY -= canvas.height / (rpx * 4);
                 }
             }
+            if (gp.axes[1] > 0.75 && gp.axes[1] < 0.95) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 2.5);
+                    }
+                }
+            if (gp.axes[1] < -0.75 && gp.axes[1] > -0.95) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 2.5);
+                    }
+                }
             if (gp.axes[3] > 0.95 && gp.axes[3] <= 1) {
                 if (posY + canvas.height / l >= canvas.height) {
                     posY = posY;
@@ -528,7 +544,7 @@
                         posYBotC = posYBotC;
                     } else {
                         console.log("          1");
-                        posYBotC += canvas.height / (rpx * 7);
+                        posYBotC += canvas.height / (rpx * 8);
                     }
                 }
                 if (gp.axes[1] < -0.2 && gp.axes[1] > -0.4) {
@@ -536,7 +552,7 @@
                         posYBotC = posYBotC;
                     } else {
                         console.log("          1");
-                        posYBotC -= canvas.height / (rpx * 7);
+                        posYBotC -= canvas.height / (rpx * 8);
                     }
                 }
                 if (gp.axes[1] > 0.4 && gp.axes[1] < 0.6) {
@@ -544,7 +560,7 @@
                         posYBotC = posYBotC;
                     } else {
                         console.log("          1");
-                        posYBotC += canvas.height / (rpx * 4);
+                        posYBotC += canvas.height / (rpx * 6);
                     }
                 }
                 if (gp.axes[1] < -0.4 && gp.axes[1] > -0.6) {
@@ -552,10 +568,26 @@
                         posYBotC = posYBotC;
                     } else {
                         console.log("          1");
+                        posYBotC -= canvas.height / (rpx * 6);
+                    }
+                }
+                if (gp.axes[1] > 0.6 && gp.axes[1] < 0.75) {
+                    if (posYBotC + canvas.height / l >= canvas.height) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
+                        posYBotC += canvas.height / (rpx * 4);
+                    }
+                }
+                if (gp.axes[1] < -0.6 && gp.axes[1] > -0.75) {
+                    if (posYBotC <= 0) {
+                        posYBotC = posYBotC;
+                    } else {
+                        console.log("          1");
                         posYBotC -= canvas.height / (rpx * 4);
                     }
                 }
-                if (gp.axes[1] > 0.6 && gp.axes[1] < 0.95) {
+                if (gp.axes[1] > 0.75 && gp.axes[1] < 0.95) {
                     if (posYBotC + canvas.height / l >= canvas.height) {
                         posYBotC = posYBotC;
                     } else {
@@ -563,7 +595,7 @@
                         posYBotC += canvas.height / (rpx * 2.5);
                     }
                 }
-                if (gp.axes[1] < -0.6 && gp.axes[1] > -0.95) {
+                if (gp.axes[1] < -0.75 && gp.axes[1] > -0.95) {
                     if (posYBotC <= 0) {
                         posYBotC = posYBotC;
                     } else {
